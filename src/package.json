@@ -17,9 +17,9 @@
   },
   "homepage": "https://github.com/Dudeful/RankedVoting#readme",
   "dependencies": {
+    "express": "^4.18.1",
     "neo4j-driver": "^4.4.7",
     "pg": "^8.7.3",
-    "pm2": "^5.2.0",
     "redis": "^4.2.0",
     "ws": "^8.8.1"
   }
