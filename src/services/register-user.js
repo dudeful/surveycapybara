@@ -32,6 +32,8 @@ const saveUser = async (data) => {
 			password,
 		]);
 
+		await setRedis(`user-${user.email}`, JSON.stringify(insert_results));
+
 		console.log(insert_results.rows);
 
 		return {
