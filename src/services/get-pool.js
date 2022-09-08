@@ -11,11 +11,7 @@ const getPool = async (query) => {
       WHERE id = $1
     `;
 
-		const poolResults = await client.query(selectPool, [
-			query.pool_id,
-		]);
-
-		console.log(poolResults.rows);
+		const poolResults = await client.query(selectPool, [query.id]);
 
 		return {
 			status: 'success',
