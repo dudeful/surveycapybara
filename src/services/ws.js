@@ -4,24 +4,18 @@ const wss = new WebSocketServer({ port: 5050 });
 
 const options = {
 	list: [
-		{ id: 'option_1', votes: 0 },
-		{ id: 'option_2', votes: 0 },
-		{ id: 'option_3', votes: 0 },
-		{ id: 'option_4', votes: 0 },
-		{ id: 'option_5', votes: 0 },
-		{ id: 'option_6', votes: 0 },
-		{ id: 'option_7', votes: 0 },
+		{ id: 'option_1', name: 'Opção #1', votes: 0 },
+		{ id: 'option_2', name: 'Opção #2', votes: 0 },
+		{ id: 'option_3', name: 'Opção #3', votes: 0 },
+		{ id: 'option_4', name: 'Opção #4', votes: 0 },
+		{ id: 'option_5', name: 'Opção #5', votes: 0 },
+		{ id: 'option_6', name: 'Opção #6', votes: 0 },
+		{ id: 'option_7', name: 'Opção #7', votes: 0 },
 	],
 	total_votes: 0,
 };
 
-const message_history = [
-	{ id: 1, user: 'test_1', body: 'hello_1' },
-	{ id: 2, user: 'test_2', body: 'hello_2' },
-	{ id: 3, user: 'test_3', body: 'hello_3' },
-	{ id: 4, user: 'test_4', body: 'hello_4' },
-	{ id: 5, user: 'test_5', body: 'hello_5' },
-];
+const message_history = [{ id: 1, user: 'test_1', body: 'hello_1' }];
 
 const castMessage = (parsed_data) => {
 	message_history.push({
