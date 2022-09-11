@@ -7,6 +7,10 @@ router.get('/', async (req, res) => {
   try {
     const result = await getPool({ pool: req.query, token: req.cookies.token });
 
+    if (result.error) {
+      throw result.error;
+    }
+
     res.send(result);
   } catch (error) {
     console.error(error);
@@ -16,9 +20,17 @@ router.get('/', async (req, res) => {
 
 router.post('/new', async (req, res) => {
   try {
+    if (!req.cookies) {
+      throw new Error('the user is not authenticated, please login and try again');
+    }
+
     validate.token(req.cookies.token);
 
     const result = await newPool(req.body.pool);
+
+    if (result.error) {
+      throw result.error;
+    }
 
     res.send(result);
   } catch (error) {

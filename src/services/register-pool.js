@@ -34,7 +34,7 @@ const savePool = async (pool) => {
       if (users_results.rows[0]) {
         pool.owner = users_results.rows[0].id;
       } else {
-        throw new Error('No user has been found');
+        throw new Error('No user with this email has been found');
       }
     }
 
@@ -44,14 +44,18 @@ const savePool = async (pool) => {
       hash = await bcrypt.hash(pool.pool_password, saltRounds);
     }
 
+    pool.options = JSON.stringify(pool.options);
+
     const insertPool = `
 		  INSERT INTO public.pools
 		  (
 		    id,
+		    owner,
 		    name,
 		    description,
 		    positive_votes_per_voter,
 		    negative_votes_per_voter,
+        negative_votes_threshold,
 		    weighted_vote,
 		    visible_vote,
 		    private_pool,
@@ -60,18 +64,19 @@ const savePool = async (pool) => {
 		    registered_pool,
 		    open_options,
 		    options_per_voter,
-		    options,
-		    owner
+		    options
 		  )
-		  VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15)
+		  VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16)
 		`;
 
     const poolData = [
       id,
+      pool.owner,
       pool.name,
       pool.description,
       pool.positive_votes_per_voter,
       pool.negative_votes_per_voter,
+      pool.negative_votes_threshold,
       pool.weighted_vote,
       pool.visible_vote,
       pool.private_pool,
@@ -81,12 +86,9 @@ const savePool = async (pool) => {
       pool.open_options,
       pool.options_per_voter,
       pool.options,
-      owner,
     ];
 
     const insert_results = await client.query(insertPool, poolData);
-
-    console.log(insert_results.rows[0]);
 
     return {
       status: 'success',
@@ -98,7 +100,7 @@ const savePool = async (pool) => {
     };
   } catch (error) {
     await client.query('ROLLBACK');
-    return { error: true, error };
+    return { error };
   } finally {
     await client.end();
   }

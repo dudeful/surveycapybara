@@ -15,6 +15,10 @@ const getPool = async (data) => {
 
     const poolResults = await client.query(selectPool, [data.pool.id]);
 
+    if (!poolResults.rows[0]) {
+      throw new Error('could not find any pool with the provided id');
+    }
+
     if (poolResults.rows[0].private_pool) {
       const matchPassword = await bcrypt.compare(
         data.pool.password,
@@ -29,6 +33,8 @@ const getPool = async (data) => {
     if (poolResults.rows[0].registered_pool) {
       validate.token(data.token);
     }
+
+    poolResults.rows[0].options = JSON.parse(poolResults.rows[0].options);
 
     return {
       status: 'success',
