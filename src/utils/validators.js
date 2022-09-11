@@ -2,24 +2,34 @@ const options = (data) => {
   return 'hello friend';
 };
 
-const user = (data) => {
-  const { username, email, password } = data;
+const email = (email) => {
+  const regex = { email: /^\w+([\.-]?\w+)+@\w+([\.:]?\w+)+(\.[a-zA-Z0-9]{2,4})+$/ };
 
-  const regex = {
-    username: /^[a-zA-Z\xC0-\uFFFF]{3,20}$/,
-    email: /^\w+([\.-]?\w+)+@\w+([\.:]?\w+)+(\.[a-zA-Z0-9]{2,4})+$/,
-    password: /(?=^.{6,}$)(?=.*[0-9])(?=.*[A-Z])(?=.*[a-z])(?=.*[^A-Za-z0-9]).*/,
-  };
-
-  if (
-    !regex.username.test(username) ||
-    !regex.email.test(email) ||
-    !regex.password.test(password)
-  ) {
-    throw new Error('some inputs provided are not valid!');
+  if (!regex.email.test(email)) {
+    throw new Error('the email provided is not valid!');
   }
 
-  return { username, email, password };
+  return email;
 };
 
-module.exports = { user, options };
+const password = (password) => {
+  const regex = { password: /(?=^.{6,}$)(?=.*[0-9])(?=.*[A-Z])(?=.*[a-z])(?=.*[^A-Za-z0-9]).*/ };
+
+  if (!regex.password.test(password)) {
+    throw new Error('the password provided is not valid!');
+  }
+
+  return password;
+};
+
+const username = (username) => {
+  const regex = { username: /^[a-zA-Z\xC0-\uFFFF]{3,20}$/ };
+
+  if (!regex.username.test(username)) {
+    throw new Error('the username provided is not valid!');
+  }
+
+  return username;
+};
+
+module.exports = { email, password, username, options };

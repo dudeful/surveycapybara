@@ -10,7 +10,9 @@ const newUser = async (data) => {
   await client.connect();
 
   try {
-    validate.user(data);
+    validate.email(data.email);
+    validate.username(data.username);
+    validate.password(data.password);
 
     const { email, username, password } = data;
 
