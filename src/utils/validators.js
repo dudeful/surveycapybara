@@ -56,7 +56,7 @@ const token = async (token) => {
     }
   } catch (error) {
     await client.query('ROLLBACK');
-    return error;
+    return { error };
   } finally {
     await client.end();
   }

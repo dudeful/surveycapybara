@@ -51,7 +51,7 @@ const login = async (data) => {
     };
   } catch (error) {
     await client.query('ROLLBACK');
-    return error;
+    return { error };
   } finally {
     await client.end();
   }

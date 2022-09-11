@@ -32,6 +32,11 @@ const newUser = async (data) => {
 
     const token = generateToken({ username });
 
+    console.log(email);
+    console.log(username);
+    console.log(hash);
+    console.log(token);
+
     const insertUser = `
 		  INSERT INTO public.users
 		  (email, username, password, token)
@@ -51,7 +56,7 @@ const newUser = async (data) => {
     };
   } catch (error) {
     await client.query('ROLLBACK');
-    return error;
+    return { error };
   } finally {
     await client.end();
   }

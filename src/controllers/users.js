@@ -17,14 +17,14 @@ route.post('/login', (req, res) => {
       })
       .send({ isAuthorized: true, user: user.data });
   } catch (error) {
-    console.error(error.code);
-    res.status(error.code || 400).send({ error: error.message });
+    console.error(error);
+    res.status(400).send({ error: error.message });
   }
 });
 
-route.post('/register', (req, res) => {
+route.post('/register', async (req, res) => {
   try {
-    const user = newUser(req.body.user);
+    const user = await newUser(req.body.user);
 
     if (user.error) {
       throw user.error;
@@ -38,7 +38,7 @@ route.post('/register', (req, res) => {
       .send({ isAuthorized: true, user: user.data });
   } catch (error) {
     console.error(error);
-    res.status(error.code || 400).send({ error: error.message });
+    res.status(400).send({ error: error.message });
   }
 });
 
