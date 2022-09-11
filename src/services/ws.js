@@ -22,7 +22,7 @@ const message_history = [
 const castMessage = (parsed_data) => {
   message_history.push({
     id: message_history.length + 1,
-    user: parsed_data.user.name,
+    user: { username: parsed_data.user.username, email: parsed_data.user.email },
     body: parsed_data.message,
   });
 
