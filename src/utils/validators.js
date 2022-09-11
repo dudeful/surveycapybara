@@ -1,11 +1,14 @@
-const options = (data) => {
+const pg = require('pg');
+const { Client } = pg;
+
+const pool = (data) => {
   return 'hello friend';
 };
 
 const email = (email) => {
-  const regex = { email: /^\w+([\.-]?\w+)+@\w+([\.:]?\w+)+(\.[a-zA-Z0-9]{2,4})+$/ };
+  const regex = /^\w+([\.-]?\w+)+@\w+([\.:]?\w+)+(\.[a-zA-Z0-9]{2,4})+$/;
 
-  if (!regex.email.test(email)) {
+  if (!regex.test(email)) {
     throw new Error('the email provided is not valid!');
   }
 
@@ -13,9 +16,9 @@ const email = (email) => {
 };
 
 const password = (password) => {
-  const regex = { password: /(?=^.{6,}$)(?=.*[0-9])(?=.*[A-Z])(?=.*[a-z])(?=.*[^A-Za-z0-9]).*/ };
+  const regex = /(?=^.{8,40}$)(?=.*[0-9])(?=.*[A-Z])(?=.*[a-z])(?=.*[^A-Za-z0-9]).*/;
 
-  if (!regex.password.test(password)) {
+  if (!regex.test(password)) {
     throw new Error('the password provided is not valid!');
   }
 
@@ -23,13 +26,40 @@ const password = (password) => {
 };
 
 const username = (username) => {
-  const regex = { username: /^[a-zA-Z\xC0-\uFFFF]{3,20}$/ };
+  const regex = /^[a-zA-Z\xC0-\uFFFF]{3,20}$/;
 
-  if (!regex.username.test(username)) {
+  if (!regex.test(username)) {
     throw new Error('the username provided is not valid!');
   }
 
   return username;
 };
 
-module.exports = { email, password, username, options };
+const token = async (token) => {
+  const client = new Client();
+  await client.connect();
+
+  try {
+    const selectToken = `
+      SELECT * FROM public.users
+      WHERE token=$1
+    `;
+
+    const tokenResults = await client.query(selectToken, [token]);
+
+    if (!tokenResults.rows[0]) {
+      throw new Error(
+        'the user is not authenticated or the token has already expired! please login again'
+      );
+    } else {
+      return tokenResults.rows[0];
+    }
+  } catch (error) {
+    await client.query('ROLLBACK');
+    return error;
+  } finally {
+    await client.end();
+  }
+};
+
+module.exports = { email, password, username, pool, token };
