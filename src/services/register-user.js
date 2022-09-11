@@ -30,12 +30,7 @@ const newUser = async (data) => {
 
     const hash = await bcrypt.hash(password, saltRounds);
 
-    const token = generateToken({ username });
-
-    console.log(email);
-    console.log(username);
-    console.log(hash);
-    console.log(token);
+    const token = generateToken({ username, email });
 
     const insertUser = `
 		  INSERT INTO public.users

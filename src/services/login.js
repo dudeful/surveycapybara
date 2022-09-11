@@ -30,7 +30,10 @@ const login = async (data) => {
       throw new Error('wrong password');
     }
 
-    const token = generateToken({ username: userResults.rows[0].username });
+    const token = generateToken({
+      username: userResults.rows[0].username,
+      email: userResults.rows[0].email,
+    });
 
     const updateToken = `
 		  UPDATE public.users

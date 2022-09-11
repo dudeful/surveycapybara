@@ -15,11 +15,10 @@ const options = {
   total_votes: 0,
 };
 
-const message_history = [
-  { id: 1, user: { username: 'anonymous', email: null }, body: 'hellofriend' },
-];
+const message_history = [];
 
 const castMessage = (parsed_data) => {
+  console.log(parsed_data);
   message_history.push({
     id: message_history.length + 1,
     user: { username: parsed_data.user.username, email: parsed_data.user.email },

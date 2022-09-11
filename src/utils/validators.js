@@ -1,6 +1,5 @@
 const pg = require('pg');
 const { Client } = pg;
-const jwt = require('jsonwebtoken');
 
 const pool = (data) => {
   return 'hello friend';
@@ -63,19 +62,4 @@ const token = async (token) => {
   }
 };
 
-const tokenFresh = (cookies) => {
-  if (!cookies) {
-    return { isFresh: false };
-  }
-
-  jwt.verify(cookies.token, process.env.JWT_SECRET, function (err, decoded) {
-    if (err) {
-      console.error(err);
-      throw new Error('Invalid JWT Token');
-    }
-
-    return { decoded };
-  });
-};
-
-module.exports = { email, password, username, pool, token, tokenFresh };
+module.exports = { email, password, username, pool, token };
