@@ -4,6 +4,7 @@ const login = require('../services/login.js');
 
 route.post('/login', async (req, res) => {
   try {
+    console.log(req.body);
     const user = await login(req.body.user);
 
     if (user.error) {
