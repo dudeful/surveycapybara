@@ -2,9 +2,9 @@ const route = require('express').Router();
 const newUser = require('../services/register-user.js');
 const login = require('../services/login.js');
 
-route.post('/login', (req, res) => {
+route.post('/login', async (req, res) => {
   try {
-    const user = login(req.body.user);
+    const user = await login(req.body.user);
 
     if (user.error) {
       throw user.error;
