@@ -7,7 +7,12 @@ const users = require('./controllers/users');
 require('dotenv').config();
 
 app.use(express.json());
-app.use(cors({ origin: 'http://localhost:3000', credentials: true }));
+app.use(
+  cors({
+    origin: ['https://surveycapybara.dudeful.com', 'http://localhost:3000'],
+    credentials: true,
+  })
+);
 app.use(cookieParser());
 
 app.get('/ping', (req, res) => {

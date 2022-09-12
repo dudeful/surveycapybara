@@ -17,8 +17,7 @@ const options = {
 
 const message_history = [];
 
-const castMessage = (parsed_data) => {
-  console.log(parsed_data);
+const castMessage = (parsed_data, pool_id) => {
   message_history.push({
     id: message_history.length + 1,
     user: { username: parsed_data.user.username, email: parsed_data.user.email },
@@ -26,28 +25,33 @@ const castMessage = (parsed_data) => {
   });
 
   wss.clients.forEach((client) => {
-    if (client.readyState === WebSocket.OPEN) {
+    if (client.readyState === WebSocket.OPEN && client.pool_id === pool_id) {
       client.send(JSON.stringify(parsed_data));
     }
   });
 };
 
-const castVote = (parsed_data) => {
+const castVote = (parsed_data, pool_id) => {
   const option = options.list.find((op) => op.id === parsed_data.vote);
   const optionIndex = options.list.indexOf(option);
   options.list[optionIndex].votes += 1;
   options.total_votes += 1;
 
   wss.clients.forEach((client) => {
-    if (client.readyState === WebSocket.OPEN) {
+    if (client.readyState === WebSocket.OPEN && client.pool_id === pool_id) {
       client.send(JSON.stringify({ options, code: 1 }));
     }
   });
 };
 
-wss.on('connection', function connection(ws) {
+const openConnection = (parsed_data, ws) => {
+  ws.send(JSON.stringify({ code: 3, options, message_history }));
+};
+
+wss.on('connection', function connection(ws, req) {
   ws.on('message', function message(data) {
     try {
+      const pool_id = req.headers['sec-websocket-protocol']?.split(', ')[0] || 'general';
       const date = new Date();
       const parsed_data = JSON.parse(data.toString());
       parsed_data.timestamp = date.toISOString();
@@ -55,13 +59,16 @@ wss.on('connection', function connection(ws) {
 
       switch (parsed_data.code) {
         case 1:
-          castVote(parsed_data);
+          ws.pool_id = pool_id;
+          castVote(parsed_data, pool_id);
           break;
         case 2:
-          castMessage(parsed_data);
+          ws.pool_id = pool_id;
+          castMessage(parsed_data, pool_id);
           break;
         case 3:
-          ws.send(JSON.stringify({ code: 3, options, message_history }));
+          ws.pool_id = pool_id;
+          openConnection(parsed_data, ws);
           break;
         default:
           break;
