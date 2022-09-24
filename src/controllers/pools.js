@@ -20,11 +20,11 @@ router.get('/', async (req, res) => {
 
 router.post('/new', async (req, res) => {
   try {
-    if (!req.cookies) {
-      throw new Error('the user is not authenticated, please login and try again');
-    }
+    // if (!req.cookies) {
+    //   throw new Error('the user is not authenticated, please login and try again');
+    // }
 
-    validate.token(req.cookies.token);
+    // validate.token(req.cookies.token);
 
     const result = await newPool(req.body.pool);
 
