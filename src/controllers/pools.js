@@ -21,7 +21,7 @@ router.get('/public', async (req, res) => {
 
 router.get('/', async (req, res) => {
   try {
-    const result = await getPool({ pool: req.query, token: req.cookies.token });
+    const result = await getPools({ pool: req.query, token: req.cookies.token });
 
     if (result.error) {
       throw result.error;
