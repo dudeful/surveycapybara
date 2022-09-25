@@ -8,7 +8,8 @@ const wss = new WebSocketServer({ port: 5050 });
 wss.on('connection', function connection(ws, req) {
   ws.on('message', function message(data) {
     try {
-      const pool_id = req.headers['sec-websocket-protocol']?.split(', ')[0] || 'general';
+      const pool_id = req.headers['pool_id'];
+      const user_id = req.headers['user_id'];
       const date = new Date();
       const parsed_data = JSON.parse(data.toString());
       parsed_data.timestamp = date.toISOString();

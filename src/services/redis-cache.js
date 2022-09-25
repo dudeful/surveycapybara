@@ -15,42 +15,30 @@ const pool = async (parsed_data, pool_id) => {
 
   if (poolCache) {
     poolCache = JSON.parse(poolCache);
-  }
-
-  if (!poolCache) {
+  } else {
     const pgClient = new pg.Client();
     await pgClient.connect();
 
-    try {
-      const poolResults = await pgClient.query('SELECT * FROM pools WHERE id = $1', [pool_id]);
+    const poolResults = await pgClient.query('SELECT * FROM pools WHERE id = $1', [pool_id]);
 
-      if (!poolResults.rows[0]) {
-        throw new Error(`no pool with id ${pool_id} has been found`);
-      }
-
-      poolResults.rows[0].pool_password = null;
-
-      poolResults.rows[0].options = JSON.parse(poolResults.rows[0].options);
-
-      if (parsed_data.code === 3) {
-        await redisClient.set(pool_id, JSON.stringify(poolResults.rows[0]));
-        poolCache = poolResults.rows[0];
-      } else {
-        const option = poolResults.rows[0].options.find((op) => op.id === parsed_data.vote);
-        const optionIndex = poolResults.rows[0].options.indexOf(option);
-        poolResults.rows[0].options[optionIndex].votes += 1;
-
-        await redisClient.set(pool_id, JSON.stringify(poolResults.rows[0]));
-
-        poolCache = await redisClient.get(pool_id);
-        poolCache = JSON.parse(poolCache);
-      }
-    } catch (err) {
-      console.error(err);
-      return { error: true, err };
-    } finally {
-      await pgClient.end();
+    if (!poolResults.rows[0]) {
+      throw new Error(`no pool with id ${pool_id} has been found`);
     }
+
+    poolResults.rows[0].pool_password = null;
+    poolResults.rows[0].options = JSON.parse(poolResults.rows[0].options);
+
+    await redisClient.set(pool_id, JSON.stringify(poolResults.rows[0]));
+    poolCache = poolResults.rows[0];
+
+    await pgClient.end();
+  }
+
+  if (parsed_data.code !== 3) {
+    const option = poolCache.options.find((op) => op.id === parsed_data.vote);
+    option.votes += 1;
+
+    await redisClient.set(pool_id, JSON.stringify(poolCache));
   }
 
   const totalVotes = poolCache.options
@@ -74,8 +62,7 @@ const messages = async (message, pool_id) => {
       message.id = 1;
       await redisClient.set(pool_id + '_msg', JSON.stringify([{ message }]));
 
-      messagesCache = await redisClient.get(pool_id + '_msg');
-      messagesCache = JSON.parse(messagesCache);
+      messagesCache = [{ message }];
     } else if (message) {
       messagesCache = JSON.parse(messagesCache);
       message.id = messagesCache.length + 1;
