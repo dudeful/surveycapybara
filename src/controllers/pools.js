@@ -2,7 +2,7 @@ const router = require('express').Router();
 const newPool = require('../services/register-pool.js');
 const getPools = require('../services/get-pool.js');
 const getPubPools = require('../services/get-pub-pools.js');
-const getPrivatePools = require('../services/get-private-pools.js');
+const getPrivatePools = require('../services/get-private-pool.js');
 
 const validate = require('../utils/validators.js');
 
