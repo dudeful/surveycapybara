@@ -14,7 +14,10 @@ const getPubPools = async (data) => {
 
     const poolResults = await client.query(selectPool);
     const pooln = []
-
+    
+    if (!poolResults.rows[0]) {
+       throw new Error('could not find any public pool');
+    }
     
 
     poolResults.rows.forEach((pool) => {
