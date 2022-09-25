@@ -1,14 +1,14 @@
 const pg = require('pg');
 const { Client } = pg;
 
-const getPubPools = async (data) => {
+const getPubPools = async () => {
   const client = new Client();
   await client.connect();
 
   try {
     const selectPool = `
       SELECT * FROM public.pools
-      WHERE private_pool = false
+      where private_pool = false
     `;
 
     const poolResults = await client.query(selectPool);
