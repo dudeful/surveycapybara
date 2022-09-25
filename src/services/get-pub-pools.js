@@ -17,13 +17,13 @@ const getPubPools = async (data) => {
       throw new Error('could not find any public pool');
     }
 
-    poolResults.rows.forEach((pool) => {
-      pool.options = JSON.parse(pool.options);
+    const pools = poolResults.rows.map((p) => {
+      return { id: p.id, name: p.name, description: p.description };
     });
 
     return {
       status: 'success',
-      pool: poolResults.rows,
+      pools,
     };
   } catch (error) {
     await client.query('ROLLBACK');
