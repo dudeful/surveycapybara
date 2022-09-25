@@ -6,12 +6,21 @@ const getPrivatePools = async (data) => {
   await client.connect();
 
   try {
+    const selectUser = `
+    SELECT * FROM public.users
+    WHERE email = $1`;
+    const userResults = await client.query(selectUser, [data.pool.email]);
+
+    if (!userResults.rows[0]) {
+      throw new Error('no email has been found for this owner');
+    }
+
     const selectPool = `
       SELECT * FROM public.pools
       where private_pool = true and owner = $1
     `;
 
-    const poolResults = await client.query(selectPool, [data.pool.email]);
+    const poolResults = await client.query(selectPool, [userResults.rows[0].id]);
 
     if (!poolResults.rows[0]) {
       throw new Error('could not find any public pool');
