@@ -3,7 +3,7 @@ const { Client } = pg;
 
 const pool = (data) => {
   console.log(data);
-  const regex = /^[a-zA-Z\xC0-\uFFFF]{5,30}$/;
+  const regex = /^[a-zA-Z\s\d*]{5,30}$/;
 
   if (!regex.test(data.name)) {
     throw new Error('invalid pool name');
