@@ -2,7 +2,7 @@ const router = require('express').Router();
 const newPool = require('../services/register-pool.js');
 const getPools = require('../services/get-pool.js');
 const getPubPools = require('../services/get-pub-pools.js');
-const getPrivatePools = require('../services/get-private-pool.js');
+const getOwnedPools = require('../services/get-owned-pools.js');
 
 const validate = require('../utils/validators.js');
 
@@ -21,9 +21,9 @@ router.get('/public', async (req, res) => {
   }
 });
 
-router.get('/private', async (req, res) => {
+router.get('/owned', async (req, res) => {
   try {
-    const result = await getPrivatePools({ pool: req.query });
+    const result = await getOwnedPools({ owner: req.query });
 
     if (result.error) {
       throw result.error;
@@ -62,7 +62,7 @@ router.post('/new', async (req, res) => {
     const result = await newPool(req.body.pool);
 
     if (result.error) {
-      throw result.error;
+      throw new Error(result.error.message);
     }
 
     res.send(result);

@@ -57,7 +57,6 @@ route.get('/refresh', async (req, res) => {
 
     //   res.send({ decoded, isAuthenticated: true });
     // });
-
     res.send({
       decoded: { email: 'dudeful@outlook.com', username: 'dudeful' },
       isAuthenticated: true,
