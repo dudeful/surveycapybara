@@ -2,7 +2,14 @@ const pg = require('pg');
 const { Client } = pg;
 
 const pool = (data) => {
-  return 'hello friend';
+  console.log(data);
+  const regex = /^[a-zA-Z\xC0-\uFFFF]{5,30}$/;
+
+  if (!regex.test(data.name)) {
+    throw new Error('invalid pool name');
+  }
+
+  return data;
 };
 
 const email = (email) => {
