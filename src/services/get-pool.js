@@ -2,6 +2,7 @@ const pg = require('pg');
 const { Client } = pg;
 const bcrypt = require('bcrypt');
 const validate = require('../utils/validators.js');
+const redisCache = require('./redis-cache.js');
 
 const getPool = async (data) => {
   const client = new Client();
@@ -36,9 +37,14 @@ const getPool = async (data) => {
 
     poolResults.rows[0].options = JSON.parse(poolResults.rows[0].options);
 
+    const is_first = true;
+
+    const token = await redisCache.session(data.pool.wsToken, data.pool.id, is_first);
+
     return {
       status: 'success',
       pool: poolResults.rows[0],
+      token,
     };
   } catch (error) {
     await client.query('ROLLBACK');
