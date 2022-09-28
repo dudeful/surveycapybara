@@ -5,7 +5,6 @@ const jwt = require('jsonwebtoken');
 
 route.post('/login', async (req, res) => {
   try {
-    console.log(req.body);
     const user = await login(req.body.user);
 
     if (user.error) {
@@ -46,21 +45,21 @@ route.post('/register', async (req, res) => {
 
 route.get('/refresh', async (req, res) => {
   try {
-    // if (!req.cookies) {
-    //   throw new Error('user unauthenticated');
-    // }
+    if (!req.cookies) {
+      throw new Error('user unauthenticated');
+    }
 
-    // jwt.verify(req.cookies.token, process.env.JWT_SECRET, function (err, decoded) {
-    //   if (err) {
-    //     throw new Error('Invalid JWT Token');
-    //   }
+    jwt.verify(req.cookies.token, process.env.JWT_SECRET, function (err, decoded) {
+      if (err) {
+        throw new Error('Invalid JWT Token');
+      }
 
-    //   res.send({ decoded, isAuthenticated: true });
-    // });
-    res.send({
-      decoded: { email: 'dudeful@outlook.com', username: 'dudeful' },
-      isAuthenticated: true,
+      res.send({ decoded, isAuthenticated: true });
     });
+    // res.send({
+    //   decoded: { email: 'dudeful@outlook.com', username: 'dudeful' },
+    //   isAuthenticated: true,
+    // });
   } catch (error) {
     console.error(error);
     res.status(400).send({ error: error.message });

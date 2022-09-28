@@ -2,7 +2,6 @@ const pg = require('pg');
 const { Client } = pg;
 
 const pool = (data) => {
-  console.log(data);
   const regex = /^[a-zA-Z\s\d*]{5,30}$/;
 
   if (!regex.test(data.name)) {
@@ -55,9 +54,7 @@ const token = async (token) => {
     const tokenResults = await client.query(selectToken, [token]);
 
     if (!tokenResults.rows[0]) {
-      throw new Error(
-        'the user is not authenticated or the token has already expired! please login again'
-      );
+      throw new Error('user unauthenticated');
     } else {
       return tokenResults.rows[0];
     }

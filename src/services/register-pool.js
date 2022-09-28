@@ -11,6 +11,7 @@ const savePool = async (pool) => {
 
   try {
     validate.pool(pool);
+    validate.email(pool.owner);
 
     const selectPoolsIds = `
       SELECT id FROM public.pools

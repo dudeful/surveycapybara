@@ -37,14 +37,14 @@ const getPool = async (data) => {
 
     poolResults.rows[0].options = JSON.parse(poolResults.rows[0].options);
 
-    const is_first = true;
+    // const is_first = true;
 
-    const token = await redisCache.session(data.pool.wsToken, data.pool.id, is_first);
+    // const token = await redisCache.session(data.pool.wsToken, data.pool.id, is_first);
 
     return {
       status: 'success',
       pool: poolResults.rows[0],
-      token,
+      // token,
     };
   } catch (error) {
     await client.query('ROLLBACK');
